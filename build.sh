@@ -11,3 +11,5 @@ python manage.py collectstatic --no-input
 # 3. Apply database migrations
 python manage.py migrate
 
+# 4. Automatically create superuser from environment variables if set (idempotent, 100% free on Render)
+python manage.py createsuperuser_if_none
