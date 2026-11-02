@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 32" fill="none" class="h-8 w-auto">
+  <!-- Geometric Flag Symbol -->
+  <rect x="2" y="4" width="4" height="24" rx="1" fill="#0F172A"/>
+  <path d="M6 6L24 11L6 17V6Z" fill="#DC2626"/>
+  <!-- Typography "redFlag" -->
+  <text x="32" y="22" font-family="'Literata', Georgia, serif" font-weight="700" font-size="20" fill="#0F172A" letter-spacing="-0.5">red<tspan fill="#DC2626">Flag</tspan></text>
+</svg>
+

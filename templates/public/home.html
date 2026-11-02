@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}redFlag — Public Abuse & Civic Grievance Reporting System{% endblock %}
+
+{% block content %}
+<!-- Editorial Hero Section -->
+<section class="border-b border-slate-200 bg-white py-16 sm:py-24">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl">
+      <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-red-50 border border-red-200 text-red-800 text-xs font-mono font-semibold uppercase tracking-wider mb-6">
+        <span class="w-2 h-2 rounded-full bg-red-600"></span>
+        Civic Accountability Platform
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-slate-900 tracking-tight leading-[1.1] mb-6">
+        Public accountability begins with an uncompromised record.
+      </h1>
+
+      <p class="text-lg sm:text-xl text-slate-600 font-sans leading-relaxed mb-8">
+        redFlag is an independent intake network for reporting public abuse of power, criminal neglect, extortion, and civic endangerment. Reports are triaged under strict privacy boundaries with immutable tracking.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+        <a href="{% url 'report_submit' %}" class="inline-flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold px-6 py-3.5 rounded-md shadow-sm transition-colors text-base focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          Submit an Incident Report
+        </a>
+        <a href="{% url 'report_track' %}" class="inline-flex justify-center items-center gap-2 bg-white hover:bg-slate-50 text-slate-800 font-semibold px-6 py-3.5 rounded-md border border-slate-300 shadow-2xs transition-colors text-base">
+          <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Track Case Reference
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Genuine Civic Ledger Metrics (Computed directly from SQLite database) -->
+<section class="border-b border-slate-200 bg-slate-900 text-white py-8" aria-label="Live Case Statistics">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-slate-800">
+      <div class="py-4 md:py-0 md:px-6 text-center md:text-left">
+        <p class="text-xs uppercase font-mono tracking-widest text-slate-400 mb-1">Total Lodged Grievances</p>
+        <p class="text-3xl font-serif font-bold text-white">{{ metrics.total_reports }}</p>
+        <p class="text-xs text-slate-400 mt-1">Verified incident files across all jurisdictions</p>
+      </div>
+
+      <div class="py-4 md:py-0 md:px-6 text-center md:text-left">
+        <p class="text-xs uppercase font-mono tracking-widest text-slate-400 mb-1">Active Inquiries</p>
+        <p class="text-3xl font-serif font-bold text-amber-400">{{ metrics.active_investigations }}</p>
+        <p class="text-xs text-slate-400 mt-1">Under formal investigation or staff triage</p>
+      </div>
+
+      <div class="py-4 md:py-0 md:px-6 text-center md:text-left">
+        <p class="text-xs uppercase font-mono tracking-widest text-slate-400 mb-1">Resolved Outcomes</p>
+        <p class="text-3xl font-serif font-bold text-emerald-400">{{ metrics.resolved_cases }}</p>
+        <p class="text-xs text-slate-400 mt-1">Documented remediations and official referrals</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- The Three Pillars of Responsible Reporting -->
+<section class="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <div class="border-l-4 border-slate-900 pl-4 mb-12">
+    <h2 class="text-2xl sm:text-3xl font-serif font-bold text-slate-900">
+      Engineered for trust, safety, and accountability
+    </h2>
+    <p class="text-sm sm:text-base text-slate-600 mt-1 max-w-2xl">
+      Unlike opaque complaint boxes or unmoderated social walls, redFlag enforces strict data isolation and genuine privacy.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <!-- Pillar 1 -->
+    <div class="bg-white p-8 border border-slate-200 rounded-md shadow-2xs space-y-4">
+      <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-slate-900 font-serif font-bold text-lg">
+        01
+      </div>
+      <h3 class="text-lg font-serif font-bold text-slate-900">Substantiated Anonymity</h3>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        When you select the anonymous protocol, your name, telephone, and email are never recorded in our database records. You receive a cryptographic tracking key that allows progress monitoring without ever establishing identity.
+      </p>
+    </div>
+
+    <!-- Pillar 2 -->
+    <div class="bg-white p-8 border border-slate-200 rounded-md shadow-2xs space-y-4">
+      <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-slate-900 font-serif font-bold text-lg">
+        02
+      </div>
+      <h3 class="text-lg font-serif font-bold text-slate-900">Restricted Evidence Handling</h3>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Supporting photographs and documents are securely encapsulated on private storage partitions. Media is never exposed through open public directories and is accessible strictly to authorized departmental reviewers.
+      </p>
+    </div>
+
+    <!-- Pillar 3 -->
+    <div class="bg-white p-8 border border-slate-200 rounded-md shadow-2xs space-y-4">
+      <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-slate-900 font-serif font-bold text-lg">
+        03
+      </div>
+      <h3 class="text-lg font-serif font-bold text-slate-900">Immutable Audit Trails</h3>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Every status transition from initial submission to final resolution generates a timestamped history entry. Staff cannot delete or silently suppress grievances without creating an auditable transition event.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Public Case Outcomes (Sanitized, non-defamatory, outcome-focused) -->
+{% if recent_resolutions %}
+<section class="border-t border-slate-200 bg-white py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
+      <div>
+        <h2 class="text-2xl font-serif font-bold text-slate-900">Recent Public Resolutions</h2>
+        <p class="text-sm text-slate-600 mt-1">Anonymized summaries of concluding actions and departmental outcomes.</p>
+      </div>
+      <a href="{% url 'transparency' %}" class="text-sm font-semibold text-slate-900 hover:text-red-600 flex items-center gap-1 transition-colors">
+        View complete civic transparency ledger
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {% for rep in recent_resolutions %}
+        <div class="p-6 border border-slate-200 rounded-md bg-slate-50/50 hover:bg-slate-50 transition-colors">
+          <div class="flex items-center justify-between mb-3">
+            <span class="font-mono text-xs font-semibold text-slate-600 bg-white px-2 py-0.5 border border-slate-200 rounded-sm">
+              {{ rep.reference_id }}
+            </span>
+            {% include 'components/status_badge.html' with status=rep.status %}
+          </div>
+          <h3 class="font-semibold text-base text-slate-900 mb-2">{{ rep.get_category_display }}</h3>
+          <p class="text-xs text-slate-500 mb-3">Incident Jurisdiction: {{ rep.address }}</p>
+          <div class="text-xs text-slate-600 border-l-2 border-emerald-500 pl-3 py-1 bg-white rounded-r-xs">
+            <span class="font-semibold text-slate-800">Outcome:</span>
+            {{ rep.status_history.last.notes|default:"Case successfully investigated and resolved." }}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- Emergency Distress Callout -->
+<section class="bg-red-50 border-t border-b border-red-200 py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="space-y-1 text-center md:text-left">
+      <h3 class="text-lg font-serif font-bold text-red-950">Is someone in immediate, life-threatening danger?</h3>
+      <p class="text-sm text-red-800">
+        redFlag is an investigative intake system, not a real-time emergency dispatch service. If you witness violence in progress, dial emergency authorities immediately.
+      </p>
+    </div>
+    <a href="{% url 'helpline' %}" class="inline-flex items-center gap-2 bg-red-700 hover:bg-red-800 text-white font-semibold text-sm px-5 py-2.5 rounded-md shadow-xs transition-colors flex-shrink-0">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+      Emergency Helpline Directory
+    </a>
+  </div>
+</section>
+{% endblock %}
+

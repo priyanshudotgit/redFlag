@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Platform — redFlag{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-slate-100/70">
+
+  <!-- Admin Masthead & Navigation -->
+  <header class="bg-slate-900 text-slate-100 border-b border-slate-800 sticky top-16 z-30 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top bar with user credentials & quick stats -->
+      <div class="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center justify-center w-8 h-8 rounded bg-red-600/90 text-white font-bold font-mono text-sm">
+            AGY
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold tracking-wider text-red-400 uppercase">redFlag Command Center</span>
+              <span class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-emerald-950 text-emerald-300 border border-emerald-700">
+                LIVE
+              </span>
+            </div>
+            <p class="text-xs text-slate-400">
+              Authorized Session: <strong class="text-slate-200">{{ user.username }}</strong>
+              {% if user.is_superuser %}
+                <span class="text-amber-400 font-semibold">(Director / Superuser)</span>
+              {% else %}
+                <span class="text-slate-300">(Investigating Staff)</span>
+              {% endif %}
+            </p>
+          </div>
+        </div>
+
+        <!-- Quick actions -->
+        <div class="flex items-center gap-2 text-xs">
+          <a href="{% url 'report_submit' %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium transition-colors">
+            <svg class="w-3.5 h-3.5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Intake New Report
+          </a>
+          <a href="{% url 'export_hub' %}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-medium transition-colors">
+            <svg class="w-3.5 h-3.5 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export Ledger
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center space-x-1 overflow-x-auto py-2 text-xs font-medium no-scrollbar" aria-label="Admin Navigation Tabs">
+        <a href="{% url 'admin_command_center' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'admin_command_center' or request.resolver_match.url_name == 'admin_dashboard' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Command Center
+        </a>
+        <a href="{% url 'staff_queue' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'staff_queue' or request.resolver_match.url_name == 'staff_cases' or request.resolver_match.url_name == 'staff_report_detail' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Cases & Triage
+        </a>
+        <a href="{% url 'department_list' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'department_list' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Nodal Departments
+        </a>
+        <a href="{% url 'reporter_list' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'reporter_list' or request.resolver_match.url_name == 'reporter_detail' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Citizen Reporters
+        </a>
+        <a href="{% url 'officer_list' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'officer_list' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Investigating Officers
+        </a>
+        <a href="{% url 'audit_log_list' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'audit_log_list' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Audit Trail
+        </a>
+        <a href="{% url 'export_hub' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'export_hub' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Data Export Hub
+        </a>
+        <a href="{% url 'announcement_list' %}" 
+           class="whitespace-nowrap px-3 py-1.5 rounded transition-colors {% if request.resolver_match.url_name == 'announcement_list' %}bg-slate-800 text-white font-semibold border-b-2 border-red-500{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800/60{% endif %}">
+          Safety Bulletins
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    {% block admin_content %}{% endblock %}
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Charter & Anonymity Disclosure — redFlag{% endblock %}
+
+{% block content %}
+<div class="bg-white border-b border-slate-200 py-12 sm:py-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-slate-100 border border-slate-300 text-slate-800 text-xs font-mono font-semibold uppercase tracking-wider mb-4">
+      Privacy Charter
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight mb-4">
+      Privacy Boundaries & Anonymity Disclosures
+    </h1>
+    <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+      A transparent explanation of what information is collected, how anonymity is protected, and the legal limits of confidentiality.
+    </p>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10 text-sm text-slate-700 leading-relaxed">
+  <section class="space-y-3">
+    <h2 class="text-xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">1. The Principle of Proportional Collection</h2>
+    <p>
+      redFlag collects only the minimum information necessary to triage a civic grievance or incident allegation. You are never required to link your legal name, social identity, or permanent residency to file a report.
+    </p>
+  </section>
+
+  <section class="space-y-3">
+    <h2 class="text-xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">2. How Anonymous Reporting Works</h2>
+    <p>
+      When you check the <span class="font-semibold text-slate-900">"Remain Anonymous"</span> box on the reporting form:
+    </p>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>All telephone numbers and email addresses are wiped from the form payload prior to persistence in our database.</li>
+      <li>The report is decoupled from any authenticated user account.</li>
+      <li>Your generated reference code (e.g., <code class="font-mono bg-slate-100 px-1 py-0.5">RF-2026-XXXXXX</code>) serves as the sole token to check case updates. We have no mechanism to contact you once you leave the platform unless you provide voluntary contact details.</li>
+    </ul>
+  </section>
+
+  <section class="space-y-3">
+    <h2 class="text-xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">3. Limits of Anonymity</h2>
+    <p>
+      We do not make misleading claims of mathematical or absolute invisibility. If you include self-identifying statements inside your incident description, or if your uploaded photographs contain visible metadata or personal identifiers, investigators may be able to deduce context.
+    </p>
+    <p>
+      Furthermore, redFlag complies with valid judicial subpoenas and court orders requiring the production of server logs in cases involving extreme crimes (such as child sexual exploitation or imminent acts of terrorism).
+    </p>
+  </section>
+
+  <section class="space-y-3">
+    <h2 class="text-xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">4. Protection of Uploaded Evidence</h2>
+    <p>
+      Uploaded photographs, audio recordings, or documents are stored in private filesystem directories outside the web server's public document root. Direct URL indexing and public downloads are strictly forbidden. Access is gated by server-side permission checks requiring authenticated staff credentials.
+    </p>
+  </section>
+
+  <section class="space-y-3">
+    <h2 class="text-xl font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">5. Data Retention & Deletion</h2>
+    <p>
+      Resolved and closed cases are retained for statutory audit compliance for a standard period of 36 months, after which associated media attachments are scrubbed from disk storage.
+    </p>
+  </section>
+</div>
+{% endblock %}
+

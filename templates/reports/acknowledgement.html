@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Acknowledgement of Receipt — redFlag Reference {{ report.reference_id }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[75vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-xl w-full bg-white border border-slate-200 rounded-md shadow-xs p-8 sm:p-10 text-center space-y-6">
+
+    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 mx-auto">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+    </div>
+
+    <div class="space-y-2">
+      <span class="text-xs font-mono font-semibold uppercase tracking-wider text-slate-500">Official Acknowledgement</span>
+      <h1 class="text-2xl sm:text-3xl font-serif font-bold text-slate-900">Incident Report Received</h1>
+      <p class="text-sm text-slate-600 max-w-md mx-auto">
+        Your incident report has been registered into the central triage queue under strict privacy controls.
+      </p>
+    </div>
+
+    <!-- Official Reference Code Box -->
+    <div class="p-6 bg-slate-50 border-2 border-slate-300 rounded-md space-y-3 relative">
+      <p class="text-xs font-bold uppercase tracking-wider text-slate-500">Your Case Reference Code</p>
+      <div id="ref-code-value" class="font-mono text-3xl sm:text-4xl font-bold text-slate-900 tracking-wider select-all">
+        {{ report.reference_id }}
+      </div>
+      <button type="button" id="copy-ref-btn" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-white border border-slate-300 px-3 py-1.5 rounded-sm transition-colors cursor-pointer shadow-2xs">
+        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+        Copy Reference Code
+      </button>
+      <p class="text-[11px] text-red-700 font-medium">
+        * Preservation of this code is mandatory. If you reported anonymously, this is your sole key to inspect case resolution updates.
+      </p>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+      <a href="{% url 'report_track' %}?reference_id={{ report.reference_id }}" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm px-6 py-3 rounded-md transition-colors shadow-2xs">
+        Check Case Status
+      </a>
+      <a href="{% url 'report_submit' %}" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-semibold text-sm px-6 py-3 rounded-md transition-colors">
+        File Another Report
+      </a>
+    </div>
+
+    <div class="pt-6 border-t border-slate-100 text-xs text-slate-400">
+      Report Lodged at {{ report.created_at|date:"F j, Y, P" }} UTC
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+

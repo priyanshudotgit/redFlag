@@ -1,0 +1,119 @@
+{% extends 'reviews/admin_base.html' %}
+{% load static %}
+
+{% block title %}System Security Audit Trail — redFlag Admin{% endblock %}
+
+{% block admin_content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 text-xs font-mono font-semibold uppercase tracking-wider mb-1.5">
+        Immutable Forensic Audit Log
+      </div>
+      <h1 class="text-2xl font-serif font-bold text-slate-900 tracking-tight">System Security & Operational Audit Trail</h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Strict, tamper-evident chronological ledger tracking status updates, evidence inspections, and data exports.
+      </p>
+    </div>
+
+    <!-- Filter Form -->
+    <form method="get" action="{% url 'audit_log_list' %}" class="flex flex-wrap items-center gap-2 text-xs">
+      <select name="action" class="px-2.5 py-1.5 border border-slate-300 rounded bg-white focus:outline-none focus:ring-2 focus:ring-slate-900">
+        <option value="">All Audit Actions</option>
+        {% for act in distinct_actions %}
+          <option value="{{ act }}" {% if selected_action == act %}selected{% endif %}>{{ act }}</option>
+        {% endfor %}
+      </select>
+
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Filter details, user, IP..." class="px-3 py-1.5 border border-slate-300 rounded focus:outline-none focus:ring-2 focus:ring-slate-900 w-48">
+
+      <button type="submit" class="px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white font-semibold transition-colors">
+        Filter
+      </button>
+
+      {% if selected_action or search_query %}
+        <a href="{% url 'audit_log_list' %}" class="px-2.5 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold">
+          Reset
+        </a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Audit Table -->
+  <div class="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold font-mono">
+          <tr>
+            <th class="px-4 py-3">Timestamp</th>
+            <th class="px-4 py-3">Action Code</th>
+            <th class="px-3 py-3">Operator</th>
+            <th class="px-3 py-3">Resource Target</th>
+            <th class="px-4 py-3">Operational Details</th>
+            <th class="px-3 py-3 font-mono">IP Address</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for log in page_obj %}
+            <tr class="hover:bg-slate-50/80 transition-colors">
+              <td class="px-4 py-3 font-mono whitespace-nowrap text-slate-500 text-[11px]">
+                {{ log.timestamp|date:"Y-m-d H:i:s" }}
+              </td>
+
+              <td class="px-4 py-3 whitespace-nowrap">
+                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold font-mono uppercase tracking-wider {% if 'STATUS' in log.action %}bg-sky-100 text-sky-800{% elif 'EVIDENCE' in log.action %}bg-purple-100 text-purple-800{% elif 'PRIORITY' in log.action %}bg-amber-100 text-amber-800{% elif 'EXPORT' in log.action %}bg-emerald-100 text-emerald-800{% else %}bg-slate-100 text-slate-800{% endif %}">
+                  {{ log.action }}
+                </span>
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap font-medium text-slate-900">
+                {% if log.user %}
+                  <span class="font-mono">@{{ log.user.username }}</span>
+                {% else %}
+                  <span class="text-slate-400 italic">Automated System</span>
+                {% endif %}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap font-mono text-[11px] text-slate-700">
+                {{ log.resource_type }}: <strong>{{ log.resource_id }}</strong>
+              </td>
+
+              <td class="px-4 py-3 text-[11px] text-slate-600 max-w-md break-words">
+                {{ log.details }}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap font-mono text-[11px] text-slate-400">
+                {{ log.ip_address|default:"127.0.0.1" }}
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                No audit log entries matching criteria.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+        <div>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} ({{ page_obj.paginator.count }} total records)</div>
+        <div class="flex items-center gap-1">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if selected_action %}&action={{ selected_action }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="px-2.5 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100">&larr; Prev</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if selected_action %}&action={{ selected_action }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" class="px-2.5 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100">Next &rarr;</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

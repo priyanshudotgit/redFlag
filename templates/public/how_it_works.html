@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}How Reporting Works — redFlag Verification & Triage Protocol{% endblock %}
+
+{% block content %}
+<div class="bg-white border-b border-slate-200 py-12 sm:py-16">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-slate-100 border border-slate-300 text-slate-800 text-xs font-mono font-semibold uppercase tracking-wider mb-4">
+      Standard Operating Procedure
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight mb-4">
+      The redFlag Intake & Verification Protocol
+    </h1>
+    <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+      Learn how incident reports progress from citizen submission to formal departmental inquiry and resolution.
+    </p>
+  </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-12">
+  <!-- Step 1 -->
+  <div class="flex gap-6 items-start">
+    <div class="flex-shrink-0 w-12 h-12 rounded-md bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center">
+      1
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-xl font-serif font-bold text-slate-900">Incident Lodging & Cryptographic ID Generation</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        The reporter completes the standardized filing form, selecting the appropriate incident category, specifying the exact occurrence timestamp, and entering location details. If the reporter chooses the anonymous preference, all contact fields are stripped on the server.
+      </p>
+      <div class="p-3 bg-slate-50 border border-slate-200 rounded-sm text-xs text-slate-600">
+        <span class="font-semibold text-slate-800">Result:</span> An immutable reference code (e.g., <code class="font-mono bg-white px-1 py-0.5 border border-slate-200">RF-2026-9K8M2T</code>) is issued immediately on the Acknowledgement screen.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="flex gap-6 items-start">
+    <div class="flex-shrink-0 w-12 h-12 rounded-md bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center">
+      2
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-xl font-serif font-bold text-slate-900">Departmental Triage & Assessment</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Authorized departmental officers access the restricted Review Queue to inspect incoming filings. Reports undergo preliminary validation to weed out spam, duplicates, or frivolous claims. Officers verify supporting documents or photographs attached to the file.
+      </p>
+      <div class="p-3 bg-amber-50 border border-amber-200 rounded-sm text-xs text-amber-900">
+        <span class="font-semibold text-amber-950">Status Transition:</span> The report state changes from <span class="font-semibold">Submitted</span> to <span class="font-semibold">Under Review</span>. A timestamped audit entry is logged.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="flex gap-6 items-start">
+    <div class="flex-shrink-0 w-12 h-12 rounded-md bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center">
+      3
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-xl font-serif font-bold text-slate-900">Formal Inquiry & Field Referral</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Substantiated claims are forwarded to the relevant enforcement unit (child welfare officers, anti-corruption bureaus, cyber investigation cells, or municipal inspectors). Investigators append confidential internal progress notes to track ongoing interviews or evidence gathering.
+      </p>
+      <div class="p-3 bg-sky-50 border border-sky-200 rounded-sm text-xs text-sky-900">
+        <span class="font-semibold text-sky-950">Status Transition:</span> The report state updates to <span class="font-semibold">Investigating</span>.
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="flex gap-6 items-start">
+    <div class="flex-shrink-0 w-12 h-12 rounded-md bg-slate-900 text-white font-serif font-bold text-xl flex items-center justify-center">
+      4
+    </div>
+    <div class="space-y-2">
+      <h2 class="text-xl font-serif font-bold text-slate-900">Resolution & Public Accountability Update</h2>
+      <p class="text-sm text-slate-600 leading-relaxed">
+        Upon completion of field inquiries, the case is concluded. The reviewing officer records a formal outcome note explaining the enforcement action taken, statutory notice issued, or case referral. The reporter can view this outcome on the tracking portal using their reference code.
+      </p>
+      <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-sm text-xs text-emerald-900">
+        <span class="font-semibold text-emerald-950">Status Transition:</span> The report status updates to <span class="font-semibold">Resolved</span> or <span class="font-semibold">Closed</span>.
+      </div>
+    </div>
+  </div>
+
+  <div class="pt-8 border-t border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-center">
+    <div>
+      <h3 class="font-serif font-bold text-lg text-slate-900">Ready to file an incident report?</h3>
+      <p class="text-xs text-slate-500">Submissions take under 4 minutes to complete.</p>
+    </div>
+    <a href="{% url 'report_submit' %}" class="bg-red-600 hover:bg-red-700 text-white font-semibold text-sm px-6 py-3 rounded-md shadow-sm transition-colors">
+      Proceed to Report Form
+    </a>
+  </div>
+</div>
+{% endblock %}
+

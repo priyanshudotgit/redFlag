@@ -1,0 +1,135 @@
+{% extends 'reviews/admin_base.html' %}
+{% load static %}
+
+{% block title %}Citizen Reporters & Credibility Directory — redFlag Admin{% endblock %}
+
+{% block admin_content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 text-xs font-mono font-semibold uppercase tracking-wider mb-1.5">
+        Citizen Engagement & Verification
+      </div>
+      <h1 class="text-2xl font-serif font-bold text-slate-900 tracking-tight">Citizen Reporters & Whistleblower Credibility</h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Monitor verified citizens, inspect past reporting track records, calibrate trust ratings, and flag abuse.
+      </p>
+    </div>
+
+    <!-- Search Form -->
+    <form method="get" action="{% url 'reporter_list' %}" class="flex items-center gap-2">
+      <input type="text" name="q" value="{{ search_query }}" placeholder="Search username, name, email..." class="px-3 py-1.5 border border-slate-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 w-64">
+      <button type="submit" class="px-3 py-1.5 rounded bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors">
+        Search
+      </button>
+      {% if search_query %}
+        <a href="{% url 'reporter_list' %}" class="px-2.5 py-1.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">
+          Clear
+        </a>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Citizens Directory Table -->
+  <div class="bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+          <tr>
+            <th class="px-4 py-3">Citizen</th>
+            <th class="px-4 py-3">Official Email</th>
+            <th class="px-3 py-3">Trust & Verification</th>
+            <th class="px-3 py-3">Reputation</th>
+            <th class="px-3 py-3">Filings History</th>
+            <th class="px-3 py-3">Joined</th>
+            <th class="px-4 py-3 text-right">Dossier</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for citizen in page_obj %}
+            <tr class="hover:bg-slate-50/80 transition-colors">
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center font-bold text-xs font-serif">
+                    {{ citizen.first_name|first|default:citizen.username|first|upper }}
+                  </div>
+                  <div>
+                    <a href="{% url 'reporter_detail' pk=citizen.pk %}" class="font-bold text-slate-900 hover:text-red-600 hover:underline">
+                      {{ citizen.get_full_name|default:citizen.username }}
+                    </a>
+                    <div class="text-[11px] text-slate-500 font-mono">@{{ citizen.username }}</div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="px-4 py-3 font-mono text-[11px] text-slate-700">
+                {{ citizen.email|default:"No email registered" }}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap">
+                {% if citizen.profile %}
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {% if citizen.profile.trust_status == 'verified' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% elif citizen.profile.trust_status == 'flagged' %}bg-red-100 text-red-800 border border-red-300{% elif citizen.profile.trust_status == 'trusted' %}bg-sky-100 text-sky-800 border border-sky-300{% else %}bg-slate-100 text-slate-700{% endif %}">
+                    {{ citizen.profile.get_trust_status_display }}
+                  </span>
+                {% else %}
+                  <span class="text-slate-400 italic">Uncalibrated</span>
+                {% endif %}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap font-mono">
+                {% if citizen.profile %}
+                  <span class="font-bold text-slate-900">{{ citizen.profile.reputation_score }}</span><span class="text-slate-400">/100</span>
+                {% else %}
+                  <span class="text-slate-400">&mdash;</span>
+                {% endif %}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap">
+                <span class="font-mono font-bold text-slate-900">{{ citizen.total_filings }}</span>
+                <span class="text-slate-500 text-[11px]">total</span>
+                {% if citizen.resolved_filings > 0 %}
+                  <span class="text-emerald-700 font-mono text-[11px] font-semibold">({{ citizen.resolved_filings }} res.)</span>
+                {% endif %}
+              </td>
+
+              <td class="px-3 py-3 whitespace-nowrap font-mono text-[11px] text-slate-500">
+                {{ citizen.date_joined|date:"M d, Y" }}
+              </td>
+
+              <td class="px-4 py-3 text-right whitespace-nowrap">
+                <a href="{% url 'reporter_detail' pk=citizen.pk %}" class="inline-flex items-center px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs transition-colors">
+                  Inspect &rarr;
+                </a>
+              </td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="7" class="px-4 py-8 text-center text-slate-500">
+                No citizen reporter accounts found.
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+      <div class="px-4 py-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs">
+        <div>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</div>
+        <div class="flex items-center gap-1">
+          {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="px-2.5 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100">&larr; Prev</a>
+          {% endif %}
+          {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" class="px-2.5 py-1 rounded border border-slate-300 bg-white hover:bg-slate-100">Next &rarr;</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+{% endblock %}

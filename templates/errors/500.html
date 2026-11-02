@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Server Error (500) — redFlag{% endblock %}
+
+{% block content %}
+<div class="min-h-[70vh] flex items-center justify-center py-16 px-4 sm:px-6 lg:px-8 text-center">
+  <div class="max-w-md w-full bg-white border border-slate-200 rounded-md p-8 shadow-xs space-y-4">
+    <div class="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <span class="text-xs font-mono font-semibold uppercase tracking-widest text-red-700">HTTP 500 Error</span>
+    <h1 class="text-2xl font-serif font-bold text-slate-900">System Processing Anomaly</h1>
+    <p class="text-xs text-slate-600 leading-relaxed">
+      An unexpected internal error occurred while processing your request. The technical error has been logged for departmental systems engineering review.
+    </p>
+    <div class="pt-4">
+      <a href="{% url 'home' %}" class="inline-flex items-center justify-center bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs px-5 py-2.5 rounded-md transition-colors">
+        Return to Home Page
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

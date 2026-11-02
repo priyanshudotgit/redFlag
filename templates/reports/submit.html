@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Incident Report — redFlag{% endblock %}
+
+{% block content %}
+<div class="bg-white border-b border-slate-200 py-10 sm:py-12">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-red-50 border border-red-200 text-red-800 text-xs font-mono font-semibold uppercase tracking-wider mb-3">
+      Official Intake Portal
+    </div>
+    <h1 class="text-3xl font-serif font-bold text-slate-900 tracking-tight">
+      File an Incident or Grievance Report
+    </h1>
+    <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+      Provide factual details regarding the incident. All submissions are encrypted and routed under our verified privacy charter.
+    </p>
+  </div>
+</div>
+
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+  <!-- Gov.uk Style Accessible Error Summary -->
+  {% if form.errors %}
+    <div class="mb-8 p-4 bg-red-50 border-l-4 border-red-600 rounded-r-md text-red-900 space-y-2" role="alert" tabindex="-1">
+      <h2 class="font-bold text-sm flex items-center gap-2">
+        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        There are problems with your submission:
+      </h2>
+      <ul class="list-disc pl-5 text-xs space-y-1">
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li><a href="#id_{{ field.name }}" class="underline hover:text-red-950 font-medium">{{ field.label }}: {{ error }}</a></li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <form method="post" enctype="multipart/form-data" action="{% url 'report_submit' %}" class="bg-white border border-slate-200 rounded-md shadow-xs p-6 sm:p-8 space-y-8" novalidate>
+    {% csrf_token %}
+
+    <!-- Section 1: Incident Categorization -->
+    <div class="space-y-4">
+      <h2 class="text-base font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">
+        1. Incident Classification
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label for="id_title" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            Incident Title <span class="text-red-600">*</span>
+          </label>
+          {{ form.title }}
+          {% if form.title.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.title.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_category" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            Category <span class="text-red-600">*</span>
+          </label>
+          {{ form.category }}
+          {% if form.category.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.category.errors.0 }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Narrative & Evidence -->
+    <div class="space-y-4">
+      <h2 class="text-base font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">
+        2. Detailed Statement
+      </h2>
+
+      <div>
+        <label for="id_description" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+          Factual Statement of Occurrence <span class="text-red-600">*</span>
+        </label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.description.errors.0 }}</p>
+        {% endif %}
+      </div>
+
+      <!-- File Attachment -->
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-md space-y-2">
+        <label for="id_evidence_file" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+          Upload Supporting Evidence (Optional)
+        </label>
+        {{ form.evidence_file }}
+        <p class="text-xs text-slate-500">
+          Photographs, scanned documents, video clips, or audio files (max 5MB). Files are kept on an isolated private partition and viewed strictly by authorized reviewers.
+        </p>
+        {% if form.evidence_file.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.evidence_file.errors.0 }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Section 3: Time & Location -->
+    <div class="space-y-4">
+      <h2 class="text-base font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">
+        3. Time & Location
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="id_date" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            Date of Incident <span class="text-red-600">*</span>
+          </label>
+          {{ form.date }}
+          {% if form.date.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.date.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label for="id_time" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            Approximate Time <span class="text-red-600">*</span>
+          </label>
+          {{ form.time }}
+          {% if form.time.errors %}
+            <p class="text-xs text-red-600 mt-1">{{ form.time.errors.0 }}</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div class="flex items-center justify-between">
+          <label for="id_address" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+            Location / Address <span class="text-red-600">*</span>
+          </label>
+          <button type="button" id="fetch-geo-btn" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-800 hover:text-red-600 transition-colors">
+            <svg class="w-3.5 h-3.5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Auto-Detect GPS
+          </button>
+        </div>
+        {{ form.address }}
+        {{ form.latitude }}
+        {{ form.longitude }}
+        <p id="geo-status" class="text-[11px] text-slate-500 font-mono"></p>
+        {% if form.address.errors %}
+          <p class="text-xs text-red-600 mt-1">{{ form.address.errors.0 }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Section 4: Anonymity & Contact Preference -->
+    <div class="space-y-4">
+      <h2 class="text-base font-serif font-bold text-slate-900 border-b border-slate-200 pb-2">
+        4. Privacy & Anonymity Preferences
+      </h2>
+
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-md space-y-4">
+        <div class="flex items-start gap-3">
+          <div class="pt-0.5">
+            {{ form.is_anonymous }}
+          </div>
+          <div class="space-y-1">
+            <label for="id_is_anonymous" class="text-xs font-bold text-slate-900 uppercase tracking-wider cursor-pointer">
+              Protect My Identity (Remain Completely Anonymous)
+            </label>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              When checked, your email and phone will NOT be stored. Your case will be accessible only via your confidential reference code.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="id_contact_email" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              Contact Email (Optional)
+            </label>
+            {{ form.contact_email }}
+            <p class="text-[11px] text-slate-400 mt-1">Used solely for official follow-up inquiries.</p>
+          </div>
+
+          <div>
+            <label for="id_contact_phone" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              Contact Phone (Optional)
+            </label>
+            {{ form.contact_phone }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legal Attestation Notice -->
+    <div class="p-4 bg-slate-100 border border-slate-300 rounded-md text-xs text-slate-600 space-y-1">
+      <span class="font-bold text-slate-800 uppercase tracking-wide">Legal Attestation & Responsibility</span>
+      <p>
+        By submitting this form, you affirm that the information provided represents a truthful, non-frivolous grievance. Deliberate false statements or malicious allegations are punishable offenses under statutory law.
+      </p>
+    </div>
+
+    <!-- Submit Action -->
+    <button type="submit" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold text-base py-3.5 px-6 rounded-md shadow-xs transition-colors focus-visible:ring-2 focus-visible:ring-red-600 focus-visible:ring-offset-2">
+      Submit Official Report
+    </button>
+  </form>
+</div>
+{% endblock %}
+

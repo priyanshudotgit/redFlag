@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Civic Transparency & Resolution Metrics — redFlag{% endblock %}
+
+{% block content %}
+<div class="bg-white border-b border-slate-200 py-12 sm:py-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-slate-100 border border-slate-300 text-slate-800 text-xs font-mono font-semibold uppercase tracking-wider mb-4">
+      Accountability Ledger
+    </div>
+    <h1 class="text-3xl sm:text-4xl font-serif font-bold text-slate-900 tracking-tight mb-4">
+      Civic Grievance Transparency Overview
+    </h1>
+    <p class="text-base sm:text-lg text-slate-600 leading-relaxed max-w-3xl">
+      We publish aggregate resolution performance to hold departmental agencies accountable to the public, while rigorously safeguarding individual witness identities and preventing the unmoderated broadcast of unverified criminal allegations.
+    </p>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+  <!-- Key Performance Indicators (KPIs) -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+    <div class="bg-white p-6 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-widest text-slate-500 mb-1">Total Cases Lodged</p>
+      <p class="text-3xl font-serif font-bold text-slate-900">{{ total_count }}</p>
+    </div>
+
+    <div class="bg-white p-6 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-widest text-slate-500 mb-1">Under Active Inquiry</p>
+      <p class="text-3xl font-serif font-bold text-sky-700">{{ status_counts.investigating|default:0 }}</p>
+    </div>
+
+    <div class="bg-white p-6 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-widest text-slate-500 mb-1">Successfully Resolved</p>
+      <p class="text-3xl font-serif font-bold text-emerald-700">{{ status_counts.resolved|default:0 }}</p>
+    </div>
+
+    <div class="bg-white p-6 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-widest text-slate-500 mb-1">Case Resolution Rate</p>
+      <p class="text-3xl font-serif font-bold text-slate-900">{{ resolution_rate }}%</p>
+    </div>
+  </div>
+
+  <!-- Incident Breakdown by Category -->
+  <div class="bg-white border border-slate-200 rounded-md p-6 sm:p-8">
+    <h2 class="text-xl font-serif font-bold text-slate-900 mb-2">Grievance Distribution by Category</h2>
+    <p class="text-xs text-slate-500 mb-6">Aggregate distribution of complaints received across civic and public safety domains.</p>
+
+    {% if category_counts %}
+      <div class="space-y-4">
+        {% for item in category_counts %}
+          <div class="space-y-1">
+            <div class="flex justify-between text-xs font-semibold text-slate-700">
+              <span>
+                {% for key, label in category_labels.items %}
+                  {% if key == item.category %}{{ label }}{% endif %}
+                {% endfor %}
+              </span>
+              <span class="font-mono text-slate-900">{{ item.count }} case{{ item.count|pluralize }}</span>
+            </div>
+            <div class="w-full bg-slate-100 rounded-xs h-2 overflow-hidden">
+              <div class="bg-slate-800 h-2 rounded-xs" style="width: {% widthratio item.count total_count 100 %}%;"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-sm text-slate-500 italic">No category data recorded yet.</p>
+    {% endif %}
+  </div>
+
+  <!-- Privacy Policy Explainer: Why Individual Accusations are Not Publicly Listed -->
+  <div class="bg-slate-100 border border-slate-300 rounded-md p-6 sm:p-8 space-y-4">
+    <div class="flex items-center gap-2 text-slate-900 font-serif font-bold text-base">
+      <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+      Responsible Civic Disclosure Principle
+    </div>
+    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+      Unlike unmoderated platforms that publicly expose raw accusations without verification, redFlag maintains a strict separation between public transparency statistics and confidential case files. Publicly broadcasting unverified criminal allegations exposes complainants to retaliation and targets innocent individuals to character assassination.
+    </p>
+    <p class="text-xs text-slate-600 leading-relaxed">
+      If you have filed an incident report, you can verify its individual review progression securely by entering your private reference ID in the <a href="{% url 'report_track' %}" class="font-semibold text-slate-900 underline hover:text-red-600">Case Tracking Portal</a>.
+    </p>
+  </div>
+</div>
+{% endblock %}
+

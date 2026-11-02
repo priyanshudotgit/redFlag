@@ -1,0 +1,145 @@
+{% extends 'reviews/admin_base.html' %}
+{% load static %}
+
+{% block title %}Nodal Departments & Responding Agencies — redFlag Admin{% endblock %}
+
+{% block admin_content %}
+<div class="space-y-6">
+
+  <!-- Header -->
+  <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300 text-xs font-mono font-semibold uppercase tracking-wider mb-1.5">
+        Inter-Agency Routing Matrix
+      </div>
+      <h1 class="text-2xl font-serif font-bold text-slate-900 tracking-tight">Nodal Departments & Dispatched Authorities</h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Configure municipal departments, statutory watchdogs, and police liaisons assigned to handle public grievances.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="text-xs font-mono bg-slate-100 px-3 py-1.5 rounded border border-slate-200 text-slate-700">
+        Active Agencies: <strong>{{ departments|length }}</strong>
+      </span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Departments Directory (2 of 3) -->
+    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="text-sm font-bold font-serif uppercase tracking-wider text-slate-900">Registered Agency Roster</h2>
+        <span class="text-xs text-slate-400 font-mono">Response Protocol Matrix</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+            <tr>
+              <th class="px-4 py-3">Code</th>
+              <th class="px-4 py-3">Department Name</th>
+              <th class="px-4 py-3">Contact Coordinates</th>
+              <th class="px-3 py-3">Target SLA</th>
+              <th class="px-3 py-3">Caseload</th>
+              <th class="px-3 py-3 text-right">Queue Link</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {% for dept in departments %}
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="px-4 py-3 font-mono font-bold text-slate-900">
+                  <span class="px-1.5 py-0.5 rounded bg-slate-100 border border-slate-200">{{ dept.code }}</span>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="font-bold text-slate-900">{{ dept.name }}</div>
+                  <div class="text-[11px] text-slate-500 line-clamp-1">{{ dept.description|default:"No description provided" }}</div>
+                </td>
+                <td class="px-4 py-3 text-[11px]">
+                  <div class="text-slate-800 font-mono">{{ dept.contact_email }}</div>
+                  <div class="text-slate-500 font-mono">{{ dept.contact_phone|default:"N/A" }}</div>
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap font-mono text-slate-700">
+                  {{ dept.sla_hours }} Hours
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold {% if dept.active_cases > 3 %}bg-red-100 text-red-800{% elif dept.active_cases > 0 %}bg-sky-100 text-sky-800{% else %}bg-slate-100 text-slate-600{% endif %}">
+                    {{ dept.active_cases }} Active / {{ dept.total_cases }} Total
+                  </span>
+                </td>
+                <td class="px-3 py-3 text-right whitespace-nowrap">
+                  <a href="{% url 'staff_queue' %}?department={{ dept.pk }}" class="text-slate-900 hover:text-red-600 font-semibold hover:underline">
+                    View Cases &rarr;
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="6" class="px-4 py-8 text-center text-slate-500">
+                  No response departments registered. Add one using the form on the right.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Register New Agency Form (1 of 3) -->
+    <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs space-y-4">
+      <div class="pb-2 border-b border-slate-200">
+        <h2 class="text-sm font-bold font-serif uppercase tracking-wider text-slate-900">Register New Department</h2>
+        <p class="text-[11px] text-slate-500">Add an agency to the grievance dispatch pool</p>
+      </div>
+
+      <form method="post" action="{% url 'department_create' %}" class="space-y-3 text-xs">
+        {% csrf_token %}
+
+        <div>
+          <label for="id_name" class="block font-semibold text-slate-700 mb-1">Department Name</label>
+          {{ form.name }}
+        </div>
+
+        <div>
+          <label for="id_code" class="block font-semibold text-slate-700 mb-1">Agency Identifier Code (e.g. POLICE, PWD)</label>
+          {{ form.code }}
+        </div>
+
+        <div>
+          <label for="id_contact_email" class="block font-semibold text-slate-700 mb-1">Official Routing Email</label>
+          {{ form.contact_email }}
+        </div>
+
+        <div>
+          <label for="id_contact_phone" class="block font-semibold text-slate-700 mb-1">Dispatch Phone / Hotline</label>
+          {{ form.contact_phone }}
+        </div>
+
+        <div>
+          <label for="id_sla_hours" class="block font-semibold text-slate-700 mb-1">Target Response SLA (Hours)</label>
+          {{ form.sla_hours }}
+        </div>
+
+        <div>
+          <label for="id_description" class="block font-semibold text-slate-700 mb-1">Mandate & Scope Description</label>
+          {{ form.description }}
+        </div>
+
+        <div class="pt-1">
+          <label class="inline-flex items-center cursor-pointer text-xs font-semibold text-slate-700">
+            {{ form.is_active }}
+            <span class="ml-2">Department Active for Immediate Dispatch</span>
+          </label>
+        </div>
+
+        <button type="submit" class="w-full py-2 px-4 rounded bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs transition-colors">
+          Register Agency
+        </button>
+      </form>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

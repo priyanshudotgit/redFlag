@@ -1,0 +1,174 @@
+{% extends 'reviews/admin_base.html' %}
+{% load static %}
+
+{% block title %}Citizen Profile: {{ citizen.username }} — redFlag Admin{% endblock %}
+
+{% block admin_content %}
+<div class="space-y-6">
+
+  <!-- Breadcrumb -->
+  <div class="flex items-center gap-2 text-xs text-slate-500">
+    <a href="{% url 'reporter_list' %}" class="hover:text-slate-800 transition-colors">&larr; Back to Citizen Directory</a>
+    <span>/</span>
+    <span class="font-mono font-bold text-slate-800">{{ citizen.username }}</span>
+  </div>
+
+  <!-- Profile Dossier Header -->
+  <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xl font-serif">
+        {{ citizen.first_name|first|default:citizen.username|first|upper }}
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xl font-serif font-bold text-slate-900">
+            {{ citizen.get_full_name|default:citizen.username }}
+          </h1>
+          <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider {% if profile.trust_status == 'verified' %}bg-emerald-100 text-emerald-800 border border-emerald-300{% elif profile.trust_status == 'flagged' %}bg-red-100 text-red-800 border border-red-300{% else %}bg-slate-100 text-slate-700{% endif %}">
+            {{ profile.get_trust_status_display }}
+          </span>
+        </div>
+        <div class="flex items-center gap-3 text-xs text-slate-500 font-mono mt-1">
+          <span>@{{ citizen.username }} (UID: #{{ citizen.pk }})</span>
+          <span>&bull;</span>
+          <span>Joined {{ citizen.date_joined|date:"M d, Y" }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3 text-xs font-mono">
+      <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-center">
+        <span class="text-[10px] text-slate-400 block uppercase">Reputation</span>
+        <strong class="text-sm font-bold text-slate-900">{{ profile.reputation_score }}/100</strong>
+      </div>
+      <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-center">
+        <span class="text-[10px] text-slate-400 block uppercase">Total Filings</span>
+        <strong class="text-sm font-bold text-slate-900">{{ reports|length }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Primary: Filings Ledger (2 of 3) -->
+    <div class="lg:col-span-2 bg-white border border-slate-200 rounded-lg shadow-2xs overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="text-sm font-bold font-serif uppercase tracking-wider text-slate-900">Submitted Complaints & Filings Ledger</h2>
+        <span class="text-xs font-mono text-slate-400">{{ reports|length }} Record(s)</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 uppercase tracking-wider font-semibold">
+            <tr>
+              <th class="px-4 py-3">Case ID</th>
+              <th class="px-4 py-3">Incident Title & Category</th>
+              <th class="px-3 py-3">Department</th>
+              <th class="px-3 py-3">Priority</th>
+              <th class="px-3 py-3">Status</th>
+              <th class="px-3 py-3">Filing Date</th>
+              <th class="px-4 py-3 text-right">Workbench</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {% for r in reports %}
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="px-4 py-3 font-mono font-bold text-slate-900">
+                  <a href="{% url 'staff_report_detail' pk=r.pk %}" class="hover:text-red-600 hover:underline">
+                    {{ r.reference_id }}
+                  </a>
+                </td>
+                <td class="px-4 py-3">
+                  <div class="font-semibold text-slate-900 truncate max-w-xs">{{ r.title }}</div>
+                  <div class="text-[11px] text-slate-500">{{ r.get_category_display }}</div>
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap text-slate-700">
+                  {{ r.department.name|default:"Unassigned"|truncatechars:16 }}
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap">
+                  <span class="font-bold text-[10px] uppercase">{{ r.get_priority_display }}</span>
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap">
+                  {% include 'components/status_badge.html' with status=r.status %}
+                </td>
+                <td class="px-3 py-3 whitespace-nowrap font-mono text-[11px] text-slate-500">
+                  {{ r.created_at|date:"M d, Y" }}
+                </td>
+                <td class="px-4 py-3 text-right whitespace-nowrap">
+                  <a href="{% url 'staff_report_detail' pk=r.pk %}" class="inline-flex items-center px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 text-white font-medium text-[11px]">
+                    Inspect &rarr;
+                  </a>
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="7" class="px-4 py-8 text-center text-slate-500">
+                  This citizen has not submitted any grievances yet.
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sidebar: Verification & Trust Controls (1 of 3) -->
+    <div class="space-y-6">
+
+      <!-- Trust Verification Form -->
+      <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-2xs space-y-4">
+        <div class="pb-2 border-b border-slate-200">
+          <h2 class="text-sm font-bold font-serif uppercase tracking-wider text-slate-900">Calibrate Trust & Credibility</h2>
+          <p class="text-[11px] text-slate-500">Update citizen verification tier and reputation metrics</p>
+        </div>
+
+        <form method="post" action="{% url 'reporter_detail' pk=citizen.pk %}" class="space-y-3 text-xs">
+          {% csrf_token %}
+
+          <div>
+            <label for="id_trust_status" class="block font-semibold text-slate-700 mb-1">Trust Verification Tier</label>
+            {{ form.trust_status }}
+          </div>
+
+          <div>
+            <label for="id_reputation_score" class="block font-semibold text-slate-700 mb-1">Reputation Score (0 - 100)</label>
+            {{ form.reputation_score }}
+          </div>
+
+          <div>
+            <label for="id_phone" class="block font-semibold text-slate-700 mb-1">Verified Telephone Number</label>
+            {{ form.phone }}
+          </div>
+
+          <div>
+            <label for="id_address" class="block font-semibold text-slate-700 mb-1">Physical Residential Address</label>
+            {{ form.address }}
+          </div>
+
+          <div>
+            <label for="id_verification_notes" class="block font-semibold text-slate-700 mb-1">Confidential Staff Verification Notes</label>
+            {{ form.verification_notes }}
+          </div>
+
+          <button type="submit" class="w-full py-2 px-4 rounded bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs shadow-2xs transition-colors">
+            Update Verification Dossier
+          </button>
+        </form>
+      </div>
+
+      <!-- Account Info -->
+      <div class="bg-white border border-slate-200 rounded-lg p-4 shadow-2xs text-xs space-y-2">
+        <h3 class="font-bold text-slate-800 uppercase tracking-wider text-[11px]">System Credentials</h3>
+        <div class="text-slate-600 space-y-1 font-mono text-[11px]">
+          <div>Email: <strong class="text-slate-900">{{ citizen.email|default:"None" }}</strong></div>
+          <div>Last Login: <strong class="text-slate-900">{{ citizen.last_login|date:"Y-m-d H:i"|default:"Never" }}</strong></div>
+          <div>Active Status: <span class="text-emerald-700 font-bold">{% if citizen.is_active %}Active{% else %}Suspended{% endif %}</span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

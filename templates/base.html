@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50 text-slate-900 antialiased">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}redFlag — Public Abuse & Grievance Reporting System{% endblock %}</title>
+  <meta name="description" content="Secure, verifiable, and confidential incident reporting platform bridging citizens, witnesses, and accountability authorities.">
+  <link rel="icon" type="image/svg+xml" href="{% static 'images/logo.svg' %}">
+
+  <!-- Typography: Literata (Serif) & Inter (Sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;0,7..72,700;1,7..72,400&display=swap" rel="stylesheet">
+
+  <!-- Production Compiled Tailwind CSS -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="flex min-h-full flex-col font-sans text-slate-900 bg-slate-50 selection:bg-red-100 selection:text-red-900">
+  <!-- Keyboard Accessibility Skip Link -->
+  <a href="#main-content" class="skip-to-content">Skip to primary content</a>
+
+  <!-- Global Navigation Header -->
+  {% include 'components/navbar.html' %}
+
+  <!-- Feedback / Toast Messages -->
+  {% include 'components/messages.html' %}
+
+  <!-- Primary Main Content Landmark -->
+  <main id="main-content" class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Global Footer -->
+  {% include 'components/footer.html' %}
+
+  <!-- Progressive Enhancement Script -->
+  <script src="{% static 'js/main.js' %}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>
+

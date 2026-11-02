@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}My Submitted Reports — redFlag Dashboard{% endblock %}
+
+{% block content %}
+<div class="bg-white border-b border-slate-200 py-8 sm:py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <span class="text-xs font-mono font-semibold uppercase text-slate-500 tracking-wider">Citizen Portal</span>
+      <h1 class="text-2xl sm:text-3xl font-serif font-bold text-slate-900 mt-1">My Incident Submissions</h1>
+      <p class="text-xs sm:text-sm text-slate-600">Logged in as <span class="font-semibold text-slate-900">{{ user.username }}</span> ({{ user.email }})</p>
+    </div>
+    <a href="{% url 'report_submit' %}" class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm px-4 py-2 rounded-md shadow-xs transition-colors">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      File New Report
+    </a>
+  </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+  <!-- Metrics -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="bg-white p-5 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-wider text-slate-500 mb-1">Total Submissions</p>
+      <p class="text-2xl font-serif font-bold text-slate-900">{{ metrics.total }}</p>
+    </div>
+    <div class="bg-white p-5 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-wider text-slate-500 mb-1">Awaiting Triage</p>
+      <p class="text-2xl font-serif font-bold text-amber-700">{{ metrics.pending }}</p>
+    </div>
+    <div class="bg-white p-5 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-wider text-slate-500 mb-1">Under Inquiry</p>
+      <p class="text-2xl font-serif font-bold text-sky-700">{{ metrics.investigating }}</p>
+    </div>
+    <div class="bg-white p-5 border border-slate-200 rounded-md">
+      <p class="text-xs uppercase font-mono tracking-wider text-slate-500 mb-1">Concluded Cases</p>
+      <p class="text-2xl font-serif font-bold text-emerald-700">{{ metrics.resolved }}</p>
+    </div>
+  </div>
+
+  <!-- Reports Table -->
+  <div class="bg-white border border-slate-200 rounded-md overflow-hidden shadow-2xs">
+    <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50/50">
+      <h2 class="font-serif font-bold text-lg text-slate-900">Submitted Cases</h2>
+      <span class="text-xs text-slate-500 font-mono">{{ reports|length }} case{{ reports|length|pluralize }} on file</span>
+    </div>
+
+    {% if reports %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-xs font-semibold uppercase tracking-wider text-slate-500 bg-slate-50/75">
+              <th scope="col" class="py-3 px-6">Reference ID</th>
+              <th scope="col" class="py-3 px-6">Incident Title</th>
+              <th scope="col" class="py-3 px-6">Category</th>
+              <th scope="col" class="py-3 px-6">Date Lodged</th>
+              <th scope="col" class="py-3 px-6">Status</th>
+              <th scope="col" class="py-3 px-6 text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            {% for report in reports %}
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="py-4 px-6 font-mono font-bold text-xs text-slate-900">
+                  {{ report.reference_id }}
+                </td>
+                <td class="py-4 px-6 font-medium text-slate-900 max-w-xs truncate">
+                  {{ report.title }}
+                </td>
+                <td class="py-4 px-6 text-xs text-slate-600">
+                  {{ report.get_category_display }}
+                </td>
+                <td class="py-4 px-6 text-xs text-slate-500 font-mono">
+                  {{ report.created_at|date:"M d, Y" }}
+                </td>
+                <td class="py-4 px-6">
+                  {% include 'components/status_badge.html' with status=report.status %}
+                </td>
+                <td class="py-4 px-6 text-right">
+                  <a href="{% url 'report_detail' reference_id=report.reference_id %}" class="inline-flex items-center text-xs font-semibold text-slate-900 hover:text-red-600 transition-colors">
+                    View Details
+                    <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-12 text-center space-y-4">
+        <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        </div>
+        <div class="space-y-1">
+          <h3 class="font-serif font-bold text-lg text-slate-900">No incident reports filed yet</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">
+            You have not submitted any incident reports while signed in. If you filed an anonymous report earlier, use the public tracking portal.
+          </p>
+        </div>
+        <div class="flex justify-center gap-3 pt-2">
+          <a href="{% url 'report_submit' %}" class="bg-red-600 hover:bg-red-700 text-white font-semibold text-xs px-4 py-2 rounded-md transition-colors">
+            File an Incident Report
+          </a>
+          <a href="{% url 'report_track' %}" class="bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 font-semibold text-xs px-4 py-2 rounded-md transition-colors">
+            Track via Reference Code
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+

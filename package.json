@@ -1,0 +1,10 @@
+{
+  "name": "redflag",
+  "version": "2.0.0",
+  "description": "redFlag - Public Abuse & Civic Grievance Reporting System",
+  "scripts": {
+    "build:css": "/home/priyanshu/.npm/_npx/a040215083095e7d/node_modules/.bin/tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --minify",
+    "watch:css": "/home/priyanshu/.npm/_npx/a040215083095e7d/node_modules/.bin/tailwindcss -i ./static/css/input.css -o ./static/css/styles.css --watch"
+  }
+}
+
